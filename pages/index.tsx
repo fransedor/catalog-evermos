@@ -50,7 +50,6 @@ export default function Home({ products }: { products: Product[] }) {
 
   return (
     <>
-      <Navbar />
       <main
         className={`flex min-h-screen flex-col items-center sm:px-24 sm:py-12 p-6 gap-6 ${inter.className}`}
       >
