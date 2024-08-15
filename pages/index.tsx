@@ -1,58 +1,102 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import SearchBar from "@/components/Searchbar";
-import Catalog from "@/components/Catalog";
 import { GetServerSideProps } from "next";
 import { Product } from "@/types/Product";
+import Navbar from "@/components/Navbar";
+import ProductCard from "@/components/ProductCard";
+import { useEffect, useState } from "react";
+import useInView from "@/utils/hooks/useInView";
+import { useRouter } from "next/router";
+import fetcherWithSearchParams from "@/services/fetcherWithSearchParams";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const PRODUCTS_PER_PAGE = 12;
+
+const PRODUCT_URL = "https://api.escuelajs.co/api/v1/products";
+
 export default function Home({ products }: { products: Product[] }) {
+  const router = useRouter();
+  const { search } = router.query;
+  const [productList, setProductList] = useState<Product[]>(products);
+  const [hasNextPage, setHasNextPage] = useState(products.length === 12);
+
+  const handleFetchNextPage = () => {
+    // Only fetch next page when the returned products from API endpoint
+    // is the amount of products per page
+    // (if less than products per page, that means that we've reached the last page)
+    const queryParams = {
+      title: search as string,
+      // The API need limit and offset to be set together
+      limit: PRODUCTS_PER_PAGE.toString(),
+      offset: productList.length.toString(),
+    };
+    fetcherWithSearchParams(PRODUCT_URL, queryParams).then((res) => {
+      if (res.length < 12) {
+        setHasNextPage(false);
+      }
+      setProductList((prev) => [...prev, ...res]);
+    });
+  };
+
+  const observedElementRef = useInView(handleFetchNextPage, {});
+
+  useEffect(() => {
+    if (search !== undefined) {
+      setProductList(products);
+			setHasNextPage(products.length === 12);
+    }
+  }, [products, search]);
+
   return (
-    <main className={`flex min-h-screen flex-col items-center sm:p-24 p-6 ${inter.className}`}>
-      <h1 className="font-3xl">Evermos Catalog</h1>
-      <SearchBar />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <div key={product.id} className="bg-white shadow-md rounded-lg overflow-hidden">
-            <img
-              // The returned image field will be a stringified 1 item array of link
-              // ex: "['https://google.com']"
-              src={JSON.parse(product.images[0])[0]}
-              alt={product.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold">{product.title}</h3>
-              <p className="text-gray-600">${product.price}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </main>
+    <>
+      <Navbar />
+      <main
+        className={`flex min-h-screen flex-col items-center sm:px-24 sm:py-12 p-6 gap-6 ${inter.className}`}
+      >
+        <h1 className="text-3xl font-bold">Browse Our Products</h1>
+        <SearchBar />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-h-[700px] overflow-auto hide-scrollbar">
+          {productList.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))}
+          {hasNextPage && (
+            <p
+              ref={observedElementRef}
+              className="sm:col-span-2 md:col-span-3 lg:col-span-4 text-center"
+            >
+              Loading...
+            </p>
+          )}
+        </div>
+      </main>
+    </>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { search = "", page = "1" } = context.query;
-  const pageAsNumber = parseInt(page as string);
-  const itemsPerPage = 10;
-  const offsetParam = (pageAsNumber - 1) * itemsPerPage;
+  const { search = "" } = context.query;
 
-  const endpointUrl = new URL("https://api.escuelajs.co/api/v1/products");
-  endpointUrl.searchParams.append("title", search as string);
-  endpointUrl.searchParams.append("limit", itemsPerPage.toString());
-  endpointUrl.searchParams.append("offset", offsetParam.toString());
-
-  // Fetch all products from the API
-  const res = await fetch(endpointUrl);
-  const allProducts: Product[] = await res.json();
-
-  console.log(allProducts[0].images.flatMap((image) => JSON.parse(image)));
-
-  return {
-    props: {
-      products: allProducts,
-    },
+  const queryParams = {
+    title: search as string,
+    // The API need limit and offset to be set together
+    limit: PRODUCTS_PER_PAGE.toString(),
+    offset: "0",
   };
+
+  try {
+    const allProducts = await fetcherWithSearchParams(PRODUCT_URL, queryParams);
+    return {
+      props: {
+        products: allProducts,
+      },
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      props: {
+        products: [],
+      },
+    };
+  }
 };

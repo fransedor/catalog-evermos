@@ -5,12 +5,12 @@ import { useState } from "react";
 const SearchBar = () => {
   const router = useRouter();
 
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(router.query.search || "");
 
   const handleSearch = () => {
     router.push({
       pathname: router.pathname,
-      query: { ...router.query, page: 1, search: searchValue },
+      query: { ...router.query, search: searchValue },
     });
   };
 
