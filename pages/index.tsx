@@ -26,7 +26,7 @@ export default function Home({ products }: { products: Product[] }) {
     // is the amount of products per page
     // (if less than products per page, that means that we've reached the last page)
     const queryParams = {
-      title: search as string,
+      title: search as string || "",
       // The API need limit and offset to be set together
       limit: PRODUCTS_PER_PAGE.toString(),
       offset: productList.length.toString(),
