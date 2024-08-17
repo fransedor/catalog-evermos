@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import useInView from "@/utils/hooks/useInView";
 import { useRouter } from "next/router";
 import fetcherWithSearchParams from "@/services/fetcherWithSearchParams";
+import Footer from "@/components/Footer";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,12 +52,15 @@ export default function Home({ products }: { products: Product[] }) {
 
   return (
     <>
+      <Head>
+        <title>Catalog</title>
+      </Head>
       <main
         className={`flex min-h-screen flex-col items-center sm:px-24 sm:py-12 p-6 gap-6 ${inter.className}`}
       >
         <h1 className="text-3xl font-bold">Browse Our Products</h1>
         <SearchBar />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-h-[700px] overflow-auto hide-scrollbar">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-h-[700px] max-w-[1000px] overflow-x-visible overflow-y-auto hide-scrollbar">
           {productList.map((product) => (
             <ProductCard key={product.id} {...product} />
           ))}
@@ -69,6 +74,7 @@ export default function Home({ products }: { products: Product[] }) {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }

@@ -5,7 +5,7 @@ import React from "react";
 
 const ProductCard = ({ id, title, images, price }: Product) => {
   return (
-    <Link href={`/${id}`} key={id} className="bg-white shadow-md rounded-lg overflow-hidden">
+    <Link href={`/${id}`} key={id} className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 relative z-40">
 			{/* Intentionally not using next/image Image because the source of the ima */}
       <img
         // The returned image field will be a stringified 1 item array of link
