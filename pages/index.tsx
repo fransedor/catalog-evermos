@@ -26,7 +26,7 @@ export default function Home({ products }: { products: Product[] }) {
     // is the amount of products per page
     // (if less than products per page, that means that we've reached the last page)
     const queryParams = {
-      title: search as string || "",
+      title: (search as string) || "",
       // The API need limit and offset to be set together
       limit: PRODUCTS_PER_PAGE.toString(),
       offset: productList.length.toString(),
@@ -44,7 +44,7 @@ export default function Home({ products }: { products: Product[] }) {
   useEffect(() => {
     if (search !== undefined) {
       setProductList(products);
-			setHasNextPage(products.length === 12);
+      setHasNextPage(products.length === 12);
     }
   }, [products, search]);
 
@@ -64,7 +64,7 @@ export default function Home({ products }: { products: Product[] }) {
               ref={observedElementRef}
               className="sm:col-span-2 md:col-span-3 lg:col-span-4 text-center"
             >
-              Loading...
+              <span className="loading-spinner"></span>
             </p>
           )}
         </div>
