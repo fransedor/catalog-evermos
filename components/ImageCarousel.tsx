@@ -35,7 +35,7 @@ const ImageCarousel = ({ images, title }: { images: string[]; title: string }) =
     }
   };
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden fade-in">
       <button
         className="absolute top-1/2 left-0 -translate-y-1/2 z-10 rounded-full bg-white p-2 shadow-md hover:bg-slate-100"
         onClick={handlePrevImage}
