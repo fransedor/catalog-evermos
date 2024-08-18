@@ -22,6 +22,7 @@ export default function Home({ products }: { products: Product[] }) {
   const { search } = router.query;
   const [productList, setProductList] = useState<Product[]>(products);
   const [hasNextPage, setHasNextPage] = useState(products.length === 12);
+	console.log(products);
 
   const handleFetchNextPage = () => {
     // Only fetch next page when the returned products from API endpoint

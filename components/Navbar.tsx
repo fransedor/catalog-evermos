@@ -32,10 +32,10 @@ const Navbar = () => {
               isOpen ? "flex" : "hidden"
             }`}
           >
-            <Link href="/" className="block px-4 py-2 text-black">
+            <Link href="/" className="block px-4 py-2 text-black hover:bg-slate-100 rounded-md">
               Catalog
             </Link>
-            <Link href="/#about" className="block px-4 py-2 text-black">
+            <Link href="/#about" className="block px-4 py-2 text-black hover:bg-slate-100 rounded-md">
               About
             </Link>
           </div>
