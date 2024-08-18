@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const Footer = () => {
@@ -10,6 +11,15 @@ const Footer = () => {
           result is handled via Server Side Rendering (SSR) while the infinite scroll is handled
           client-side. The carousel in product detail page is built using native CSS and JS.
         </p>
+        <p className="text-2xl font-bold">Links</p>
+        <div className="flex gap-4">
+          <a href="https://linkedin.com/in/fransedor" className="bg-white hover:bg-slate-100">
+            <Image src="/linkedin_icon.svg" alt="Fransedo's Linkedin" width={24} height={24} />
+          </a>
+          <a href="https://github.com/fransedor" className="bg-white hover:bg-slate-100">
+            <Image src="/github_icon.svg" alt="Fransedo's Github" width={24} height={24} />
+          </a>
+        </div>
       </div>
     </footer>
   );
