@@ -2,11 +2,15 @@
 import ImageCarousel from "@/components/ImageCarousel";
 import { Product } from "@/types/Product";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import React from "react";
 
 const ProductDetail = ({ product }: { product: Product }) => {
   return (
     <div className="container mx-auto px-4 py-8">
+			<Head>
+				<title>{product.title}</title>
+			</Head>
       <div className="flex gap-6 flex-col md:flex-row">
         <div className="md:w-1/2 flex flex-col gap-4">
           <ImageCarousel images={product.images} title={product.title} />
